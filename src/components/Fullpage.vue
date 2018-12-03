@@ -61,9 +61,13 @@
 </style>
 <script>
 export default {
+  props: {
+    bgColor: {
+      type: Array
+    }
+  },
   data() {
     return {
-      bgColor: ["red", "blue", "yellow", "green"],
       curIndex: 0,
       name: "",
       canWheel: true,

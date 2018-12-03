@@ -6,5 +6,8 @@ import Fullpage from "@/components/Fullpage.vue";
 /* eslint-disable no-new */
 new Vue({
   el: "#app",
+  data: {
+    bgColor: ["red", "blue", "yellow", "green"]
+  },
   components: { Fullpage }
 });
