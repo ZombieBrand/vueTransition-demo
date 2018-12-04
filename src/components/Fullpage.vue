@@ -1,13 +1,17 @@
 <template>
-  <div>
+  <div v-on:wheel="wheelEvent($event);">
     <transition-group tag="div" v-bind:name="name" class="content">
       <div
         class="block"
-        v-for="(list, index) in bgColor"
+        v-for="(list, index) in page"
         v-bind:key="list"
-        v-bind:style="{ 'background-color': list }"
+        v-bind:style="{
+          'background-color':
+            bgColor[index] && bgColor
+              ? bgColor[index]
+              : baseBgc[Math.floor(Math.random() * 4)]
+        }"
         v-show="index === curIndex"
-        v-on:wheel="wheelEvent($event);"
         v-on:transitionend="end"
       >
         {{ list }}
@@ -64,6 +68,10 @@ export default {
   props: {
     bgColor: {
       type: Array
+    },
+    page: {
+      type: Number,
+      required: true
     }
   },
   data() {
@@ -71,14 +79,16 @@ export default {
       curIndex: 0,
       name: "",
       canWheel: true,
-      endCount: 0
+      endCount: 0,
+      baseBgc: [],
+      addColors: null
     };
   },
   methods: {
     wheelEvent(e) {
       if (this.canWheel === true) {
         if (e.deltaY > 0) {
-          if (this.curIndex === this.bgColor.length - 1) {
+          if (this.curIndex === this.page - 1) {
             this.canWheel = true;
             return;
           }
@@ -104,7 +114,31 @@ export default {
         this.canWheel = true;
         this.endCount = 0;
       }
+    },
+    randomColor() {
+      this.addColors = this.page - this.bgColor.length;
+      function getRandColor() {
+        var str = "0123456789abcdef";
+
+        var arr = [];
+
+        for (var i = 0; i < 6; i++) {
+          var random = Math.floor(Math.random() * 16);
+
+          arr.push(str[random]);
+        }
+
+        return "#" + arr.join("");
+      }
+      if (this.addColors > 0) {
+        for (let i = 0; i < this.addColors; i++) {
+          this.baseBgc.push(getRandColor());
+        }
+      }
     }
+  },
+  mounted() {
+    this.randomColor();
   }
 };
 </script>
